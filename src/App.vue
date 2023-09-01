@@ -79,8 +79,13 @@ const show_post = async (id) => {
     await fetch_blog_detail()
 }
 function topFunction() {
-  document.body.scrollTop = 0; // For Safari
-  document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+    document.body.scrollTop = 0; // For Safari
+    document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+}
+
+const formatDate = (inputString) => {
+    const options = { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
+    return new Date(inputString).toLocaleDateString(undefined, options);
 }
 
 </script>
@@ -152,7 +157,7 @@ function topFunction() {
                     <div class="flex justify-between items-center w-full pl-5 mb-4">
                         <span>ID: {{ post.id }}</span>
                         <button class="cursor-pointer bg-blue-700 text-white border-2 rounded-lg px-2 py-1 mr-5"
-                            @click.prevent="show_post(post.id);topFunction();">
+                            @click.prevent="show_post(post.id); topFunction();">
                             more
                         </button>
                     </div>
@@ -161,6 +166,11 @@ function topFunction() {
         </template>
         <div v-if="appData.page_mode == 'post'" class="flex flex-col justify-center items-center mt-5">
             <!-- {{ appData.post }} -->
+            <span class="text-xs text-gray-600 italic my-2">
+                Last Updated:
+                {{
+                    formatDate(appData.post.updated_at)
+                }}</span>
             <img class="rounded-lg max-w-sm  md:max-w-5xl" :src="appData.post.img" :alt="appData.post.title">
             <div class="flex flex-col justify-center items-start  max-w-sm  md:max-w-5xl border-2 p-5">
                 <span class="text-lg font-bold">{{ appData.post.title }}</span>
@@ -170,10 +180,11 @@ function topFunction() {
             </div>
         </div>
 
-        <div v-if="appData.page_mode == 'post'"  class="flex flex-col justify-center items-center">
+        <div v-if="appData.page_mode == 'post'" class="flex flex-col justify-center items-center">
             <h1 class="text-md font-bold mt-10 underline underline-offset-8">সাম্প্রতিক তালিকা</h1>
             <div class="grid grid-cols-2 mt-5 md:grid-cols-6 md:mt-5 md:mx-20">
-                <div v-for="post, index in appData.recentPosts" :key="index" @click.prevent.stop="show_post(post.id);topFunction();"
+                <div v-for="post, index in appData.recentPosts" :key="index"
+                    @click.prevent.stop="show_post(post.id); topFunction();"
                     class="relative flex flex-col justify-center items-center border-2 m-5 cursor-pointer hover:ring-4 hover:shadow-xl hover:bg-blue-200">
                     <!-- {{ post }} -->
                     <img class="rounded-sm" :src="post.img" :alt="post.title">
@@ -183,7 +194,9 @@ function topFunction() {
                             {{ post.short }}
                         </p>
                     </div>
-                    <span class="text-gray-200 font-bold right-2 top-2 absolute border-2 p-1 rounded-full text-xs border-gray-400 hover:bg-gray-600">{{ post.id }}</span>
+                    <span
+                        class="text-gray-200 font-bold right-2 top-2 absolute border-2 p-1 rounded-full text-xs border-gray-400 hover:bg-gray-600">{{
+                            post.id }}</span>
                 </div>
             </div>
 
